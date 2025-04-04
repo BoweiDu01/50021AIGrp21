@@ -23,7 +23,7 @@ train_dataset, validation_dataset = train_test_split(dataset,test_size=0.2,train
 test_dataset, validation_dataset = train_test_split(validation_dataset,test_size=0.5,train_size=0.5,shuffle=True,random_state=42,stratify=[tp[1] for tp in validation_dataset])
 
 train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True)
-val_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=32, shuffle=True)
+val_dataloader = torch.utils.data.DataLoader(validation_dataset, batch_size=32, shuffle=True)
 
 print(dict(Counter([label for _, label in dataset])))
 print(dict(Counter([label for _, label in train_dataset])))
