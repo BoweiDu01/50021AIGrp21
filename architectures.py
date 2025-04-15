@@ -46,7 +46,7 @@ class SR50ViTB16(nn.Module):
 	def __init__(self):
 		super().__init__()
 		self.id = self.__class__.__name__
-		self.backbone = timm.create_model("vit_base_r50_s16_224", pretrained=False, num_classes=0)
+		self.backbone = timm.create_model("vit_base_r50_s16_224", pretrained=True, num_classes=0)
 		self.backbone_stem = self.backbone.patch_embed.backbone
 		in_channels = self.backbone_stem.feature_info[-1]['num_chs']
 		self.somnial = SomnialUnit(in_channels)
@@ -73,7 +73,7 @@ class R50ViTB16(nn.Module):
 	def __init__(self):
 		super().__init__()
 		self.id = self.__class__.__name__
-		self.backbone = timm.create_model("vit_base_r50_s16_224", pretrained=False, num_classes=0)
+		self.backbone = timm.create_model("vit_base_r50_s16_224", pretrained=True, num_classes=0)
 		self.pool = nn.Identity()
 		self.classifier = nn.Linear(self.backbone.num_features, 2)
 

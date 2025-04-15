@@ -3,32 +3,32 @@ import matplotlib.ticker as ticker
 import numpy as np
 import os
 import torch
-from skimage.feature import local_binary_pattern
+# from skimage.feature import local_binary_pattern
 from torchvision import transforms
 
-def compute_lbp_tensor(img):
-	"""
-	Input: tensor of shape (3, H, W)
-	Output: tensor of shape (1, H, W)
-	"""
-	gray = transforms.functional.rgb_to_grayscale(img)
-	gray_np = gray.squeeze(0).numpy()
-	lbp = local_binary_pattern(gray_np, P=8, R=1, method="uniform")
-	lbp = torch.tensor(lbp, dtype=torch.float32) / lbp.max()
-	return lbp.unsqueeze(0)
+# def compute_lbp_tensor(img):
+# 	"""
+# 	Input: tensor of shape (3, H, W)
+# 	Output: tensor of shape (1, H, W)
+# 	"""
+# 	gray = transforms.functional.rgb_to_grayscale(img)
+# 	gray_np = gray.squeeze(0).numpy()
+# 	lbp = local_binary_pattern(gray_np, P=8, R=1, method="uniform")
+# 	lbp = torch.tensor(lbp, dtype=torch.float32) / lbp.max()
+# 	return lbp.unsqueeze(0)
 
-class LBPDataset(torch.utils.data.Dataset):
-	def __init__(self, imagefolder_dataset):
-		self.dataset = imagefolder_dataset
+# class LBPDataset(torch.utils.data.Dataset):
+# 	def __init__(self, imagefolder_dataset):
+# 		self.dataset = imagefolder_dataset
 
-	def __getitem__(self, index):
-		img, label = self.dataset[index]
-		lbp = compute_lbp_tensor(img)
-		img_with_lbp = torch.cat([img, lbp], dim=0)
-		return img_with_lbp, label
+# 	def __getitem__(self, index):
+# 		img, label = self.dataset[index]
+# 		lbp = compute_lbp_tensor(img)
+# 		img_with_lbp = torch.cat([img, lbp], dim=0)
+# 		return img_with_lbp, label
 
-	def __len__(self):
-		return len(self.dataset)
+# 	def __len__(self):
+# 		return len(self.dataset)
 
 def seed_functions(seed):
 	"""Seeds functions from numpy and torch."""
