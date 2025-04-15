@@ -6,6 +6,7 @@ import torch.nn.functional as F
 import torchvision.models as models
 from collections import deque
 
+# Small units
 class SomnialUnit(nn.Module):
 	def __init__(self, in_channels, k=10):
 		super().__init__()
@@ -37,6 +38,7 @@ class SomnialUnit(nn.Module):
 		m = self.modulator(x_s_hat, x_t)
 		return m * x_s_hat + (1 - m) * x_t
 
+# Hybrid architectures
 class SR50ViTB16(nn.Module):
 	def __init__(self):
 		super().__init__()
@@ -78,6 +80,7 @@ class R50ViTB16(nn.Module):
 		x = self.classifier(x)
 		return x
 
+# ViT architectures
 class ViTB16(nn.Module):
 	def __init__(self, num_classes=2):
 		super(ViTB16, self).__init__()
@@ -90,6 +93,7 @@ class ViTB16(nn.Module):
 	def forward(self, x):
 		return self.model(x)
 
+# CNN architectures: ResNets
 class RN50(nn.Module):
 	def __init__(self, num_classes=2):
 		super().__init__()
@@ -154,6 +158,7 @@ class LBPPatchedRN152(nn.Module):
 	def forward(self, x):
 		return self.model(x)
 
+# CNN architectures: DenseNets
 class DN121(nn.Module):
 	def __init__(self, num_classes=2):
 		super().__init__()
@@ -228,16 +233,6 @@ class DN201(nn.Module):
 	def forward(self, x):
 		return self.model(x)
 
-class DN169(nn.Module):
-	def __init__(self, num_classes=2):
-		super().__init__()
-		self.id = self.__class__.__name__
-		self.model = models.densenet169(pretrained=True)
-		self.model.classifier = nn.Linear(self.model.classifier.in_features, num_classes)
-
-	def forward(self, x):
-		return self.model(x)
-
 class LBPPatchedDN201(nn.Module):
 	def __init__(self, num_classes=2):
 		super().__init__()
@@ -260,6 +255,27 @@ class LBPPatchedDN201(nn.Module):
 	def forward(self, x):
 		return self.model(x)
 
+# CNN architectures: Inceptions
+class InceptionV3(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.inception_v3(pretrained=True, aux_logits=False)
+		self.model.fc = nn.Linear(self.model.fc.in_features, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+class InceptionV4(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = timm.create_model("inception_v4", pretrained=True, num_classes=num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+# Experiments
 class LBPPatchedCNV2B(nn.Module):
 	def __init__(self, num_classes=2):
 		super().__init__()
