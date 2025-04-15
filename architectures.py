@@ -256,7 +256,7 @@ class LBPPatchedDN201(nn.Module):
 		return self.model(x)
 
 # CNN architectures: Inceptions
-class InceptionV3(nn.Module):
+class IV3(nn.Module):
 	def __init__(self, num_classes=2):
 		super().__init__()
 		self.id = self.__class__.__name__
@@ -266,11 +266,42 @@ class InceptionV3(nn.Module):
 	def forward(self, x):
 		return self.model(x)
 
-class InceptionV4(nn.Module):
+class IV4(nn.Module):
 	def __init__(self, num_classes=2):
 		super().__init__()
 		self.id = self.__class__.__name__
 		self.model = timm.create_model("inception_v4", pretrained=True, num_classes=num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+# CNN architectures: MobileNets
+class MNV2(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.mobilenet_v2(pretrained=True)
+		self.model.classifier[1] = nn.Linear(self.model.last_channel, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+class MNV3S(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.mobilenet_v3_small(pretrained=True)
+		self.model.classifier[3] = nn.Linear(self.model.classifier[3].in_features, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+class MNV3L(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.mobilenet_v3_large(pretrained=True)
+		self.model.classifier[3] = nn.Linear(self.model.classifier[3].in_features, num_classes)
 
 	def forward(self, x):
 		return self.model(x)
