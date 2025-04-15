@@ -123,3 +123,99 @@ class LBPPatchedRN152(nn.Module):
 
 	def forward(self, x):
 		return self.model(x)
+
+class DN121(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.densenet121(pretrained=True)
+		self.model.classifier = nn.Linear(self.model.classifier.in_features, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+class LBPPatchedDN121(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.densenet121(pretrained=True)
+		old_conv = self.model.features.conv0
+		self.model.features.conv0 = nn.Conv2d(
+			in_channels=4,
+			out_channels=old_conv.out_channels,
+			kernel_size=old_conv.kernel_size,
+			stride=old_conv.stride,
+			padding=old_conv.padding,
+			bias=old_conv.bias is not None
+		)
+		with torch.no_grad():
+			self.model.features.conv0.weight[:, :3] = old_conv.weight
+			self.model.features.conv0.weight[:, 3] = old_conv.weight[:, 0]
+		self.model.classifier = nn.Linear(self.model.classifier.in_features, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+class DN169(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.densenet169(pretrained=True)
+		self.model.classifier = nn.Linear(self.model.classifier.in_features, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+class LBPPatchedDN169(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.densenet169(pretrained=True)
+		old_conv = self.model.features.conv0
+		self.model.features.conv0 = nn.Conv2d(
+			in_channels=4,
+			out_channels=old_conv.out_channels,
+			kernel_size=old_conv.kernel_size,
+			stride=old_conv.stride,
+			padding=old_conv.padding,
+			bias=old_conv.bias is not None
+		)
+		with torch.no_grad():
+			self.model.features.conv0.weight[:, :3] = old_conv.weight
+			self.model.features.conv0.weight[:, 3] = old_conv.weight[:, 0]
+		self.model.classifier = nn.Linear(self.model.classifier.in_features, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+class DN201(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.densenet201(pretrained=True)
+		self.model.classifier = nn.Linear(self.model.classifier.in_features, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+class LBPPatchedDN201(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.densenet201(pretrained=True)
+		old_conv = self.model.features.conv0
+		self.model.features.conv0 = nn.Conv2d(
+			in_channels=4,
+			out_channels=old_conv.out_channels,
+			kernel_size=old_conv.kernel_size,
+			stride=old_conv.stride,
+			padding=old_conv.padding,
+			bias=old_conv.bias is not None
+		)
+		with torch.no_grad():
+			self.model.features.conv0.weight[:, :3] = old_conv.weight
+			self.model.features.conv0.weight[:, 3] = old_conv.weight[:, 0]
+		self.model.classifier = nn.Linear(self.model.classifier.in_features, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
