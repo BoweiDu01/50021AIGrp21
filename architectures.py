@@ -219,3 +219,23 @@ class LBPPatchedDN201(nn.Module):
 
 	def forward(self, x):
 		return self.model(x)
+
+class Inceptionv3(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.Inception3(pretrained=True)
+		self.model.fc = nn.Linear(self.model.fc.in_features, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+	
+class Densenet169(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.densenet169(pretrained=True)
+		self.model.classifier = nn.Linear(self.model.classifier.in_features, num_classes)
+
+	def forward(self, x):
+		return self.model(x)	
