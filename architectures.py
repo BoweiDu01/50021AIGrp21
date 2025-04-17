@@ -219,3 +219,26 @@ class LBPPatchedDN201(nn.Module):
 
 	def forward(self, x):
 		return self.model(x)
+	
+class MobilenetV2(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.mobilenet_v2(pretrained=True)
+		self.model.classifier[1] = nn.Linear(self.model.classifier[1].in_features, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+	
+class ViTB32(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = models.vit_b_32(pretrained=True)
+		self.model.heads = nn.Sequential(
+			nn.Linear(768, num_classes)
+		)
+
+	def forward(self, x):
+		return self.model(x)
