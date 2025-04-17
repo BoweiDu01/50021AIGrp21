@@ -67,10 +67,10 @@ class SR50ViTB16(nn.Module):
 		return x
 
 class R50ViTB16(nn.Module):
-	def __init__(self):
+	def __init__(self, num_classes=2):
 		super().__init__()
 		self.id = self.__class__.__name__
-		self.model = timm.create_model("vit_base_r50_s16_224", pretrained=True, num_classes=2)
+		self.model = timm.create_model("vit_base_r50_s16_224", pretrained=True, num_classes=num_classes)
 
 	def forward(self, x):
 		return self.model(x)
@@ -317,34 +317,26 @@ class MNV3L(nn.Module):
 		return self.model(x)
 
 # Experiments
-class CNV2B(nn.Module):
+class CNV2B1(nn.Module):
 	def __init__(self, num_classes=2):
 		super().__init__()
 		self.id = self.__class__.__name__
-		self.model = timm.create_model("convnextv2_base.fcmae_ft_in22k_in1k", pretrained=True)
-		self.model.head = nn.Linear(self.model.head.in_features, num_classes)
+		self.model = timm.create_model("convnextv2_base.fcmae_ft_in22k_in1k", pretrained=True, num_classes=0)
+		self.pool = nn.AdaptiveAvgPool2d((1, 1))
+		self.head = nn.Linear(self.model.num_features, num_classes)
 
 	def forward(self, x):
-		return self.model(x)
+		x = self.model(x)
+		if x.ndim == 4:
+			x = self.pool(x)
+			x = x.view(x.size(0), -1)
+		return self.head(x)
 
-class LBPPatchedCNV2B(nn.Module):
+class EVA2L(nn.Module):
 	def __init__(self, num_classes=2):
 		super().__init__()
 		self.id = self.__class__.__name__
-		self.model = timm.create_model("convnextv2_base.fcmae_ft_in22k_in1k", pretrained=True)
-		old_conv = self.model.stem[0]
-		self.model.stem[0] = nn.Conv2d(
-			in_channels=4,
-			out_channels=old_conv.out_channels,
-			kernel_size=old_conv.kernel_size,
-			stride=old_conv.stride,
-			padding=old_conv.padding,
-			bias=old_conv.bias is not None
-		)
-		with torch.no_grad():
-			self.model.stem[0].weight[:, :3] = old_conv.weight
-			self.model.stem[0].weight[:, 3] = old_conv.weight[:, 0]
-		self.model.head = nn.Linear(self.model.head.in_features, num_classes)
+		self.model = timm.create_model("eva02_large_patch14_448.mim_m38m_ft_in22k_in1k", pretrained=True, num_classes=num_classes)
 
 	def forward(self, x):
 		return self.model(x)
