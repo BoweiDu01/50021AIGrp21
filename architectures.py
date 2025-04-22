@@ -41,12 +41,43 @@ class SomnialUnit(nn.Module):
 		m = self.modulator(x_s_hat, x_t)
 		return m * x_s_hat + (1 - m) * x_t
 
+class SMNV2(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		base = models.mobilenet_v2(weights=MobileNet_V2_Weights.DEFAULT)
+		self.stem = nn.Sequential(
+			base.features[0],  # Conv-BN-ReLU
+			SomnialUnit(in_channels=32, k=2)
+		)
+		self.features = base.features[1:]
+		self.classifier = nn.Sequential(
+			nn.Dropout(0.2),
+			nn.Linear(base.last_channel, num_classes)
+		)
+
+	def forward(self, x):
+		x = self.stem(x)
+		x = self.features(x)
+		x = x.mean([2, 3])
+		return self.classifier(x)
+
 class MNV2(nn.Module):
 	def __init__(self, num_classes=2):
 		super().__init__()
 		self.id = self.__class__.__name__
 		self.model = models.mobilenet_v2(weights=MobileNet_V2_Weights.DEFAULT)
 		self.model.classifier[1] = nn.Linear(self.model.last_channel, num_classes)
+
+	def forward(self, x):
+		return self.model(x)
+
+class RNRS50(nn.Module):
+	def __init__(self, num_classes=2):
+		super().__init__()
+		self.id = self.__class__.__name__
+		self.model = timm.create_model("resnetrs50", pretrained=True)
+		self.model.reset_classifier(num_classes)
 
 	def forward(self, x):
 		return self.model(x)
