@@ -4,6 +4,7 @@
 
 ## Setup
 
-1. Clone or download the repository.
-2. Install dependencies (e.g. using `pip install -r requirements.txt`).
-3. Run cells sequentially in `main.ipynb` as desired!
+1. Download and extract, or clone, the repository.
+2. Install the dependencies (e.g. using `pip install -r requirements.txt`).
+3. Optionally, extract `models` for our weights.
+4. Run `main.ipynb` cell-sequentially, as desired!
