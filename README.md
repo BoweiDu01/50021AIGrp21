@@ -45,3 +45,8 @@ Run the post-training cell to generate a plot of training and validation loss ov
 The best validation loss is highlighted in the plot for easy identification.
 
 A confusion matrix and F1 score are computed on the test set to evaluate model performance.
+
+###Pretrained Weights
+
+Model weights can be accessed through this link. 
+https://drive.google.com/drive/folders/1cLbZhj7afSI0w5M-bXx25hB88afFwKUo?usp=sharing
